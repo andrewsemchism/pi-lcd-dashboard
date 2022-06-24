@@ -21,15 +21,15 @@ def displayWeather():
   global weatherData
   if weatherData["cod"] != "404":
     current_temperature = weatherData["main"]["temp"] - 273.15
-    high_temperature = weatherData["main"]["temp_max"] - 273.15
-    low_temperature = weatherData["main"]["temp_min"] - 273.15
+    feels_like = weatherData["main"]["feels_like"] - 273.15
+    weather_desc = weatherData["weather"][0]["description"]
     lcd.clear()
     lcd.write_string('----TEMPERATURE-----')
     lcd.write_string('    Now: ' + str(current_temperature) + 'C')
     lcd.cursor_pos = (2, 0)
-    lcd.write_string('    High: ' + str(high_temperature) + 'C')
+    lcd.write_string(' Feels Like: ' + str(feels_like) + 'C')
     lcd.cursor_pos = (3, 0)
-    lcd.write_string('    Low: ' + str(low_temperature) + 'C')
+    lcd.write_string(weather_desc.title().center(20))
     lcd.crlf()
   else:
     lcd.clear()
@@ -60,11 +60,10 @@ while (True):
   currentTime = datetime.datetime.now()
   elapsedTime = currentTime - lastUpdate
   elapsedTimeSeconds = elapsedTime.total_seconds()
-  if (elapsedTimeSeconds > 60*5):
+  if (elapsedTimeSeconds > 60*10):
     lastUpdate = currentTime
     print("Updating Data")
     getWeatherData()
-
 
   displayTime()
   displayWeather()
