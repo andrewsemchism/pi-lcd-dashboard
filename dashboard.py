@@ -18,6 +18,7 @@ lastUpdate = datetime.datetime(2000, 1, 1)
 weatherData = {}
 btc_usd = 0
 eth_usd = 0
+spy_data = {}
 
 def displayWeather():
   global weatherData
@@ -56,6 +57,20 @@ def getCryptoData():
   data_eth_usd = r_eth_usd.json()
   eth_usd = data_eth_usd["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
 
+def getStocksData():
+  global spy_data
+  url_spy = 'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=SPY&apikey=' + alphavantageAPI
+  r_spy = requests.get(url_spy)
+  spy_data = r_spy.json()
+
+def displayStocksData():
+  global spy_data
+  spy_string = 'SPY: $' +  str(round(float(spy_data["Global Quote"]["05. price"]),2)) + ' ' + str(round(float(spy_data["Global Quote"]["10. change percent"][:-1]),2)) + '%'
+  lcd.clear()
+  lcd.write_string('-------STOCKS-------')
+  lcd.write_string(spy_string.center(20))
+  lcd.crlf()
+
 def displayCryptoData():
   global btc_usd
   global eth_usd
@@ -85,15 +100,18 @@ while (True):
   currentTime = datetime.datetime.now()
   elapsedTime = currentTime - lastUpdate
   elapsedTimeSeconds = elapsedTime.total_seconds()
-  if (elapsedTimeSeconds > 60*10):
+  if (elapsedTimeSeconds > 60*12):
     lastUpdate = currentTime
     print("Updating Data")
     getWeatherData()
     getCryptoData()
+    getStocksData()
 
   displayTime()
   sleep(6)
   displayWeather()
   sleep(6)
   displayCryptoData()
+  sleep(6)
+  displayStocksData()
   sleep(6)
