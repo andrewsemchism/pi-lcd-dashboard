@@ -68,6 +68,9 @@ def displayStocksData():
   spy_string = 'SPY: $' +  str(round(float(spy_data["Global Quote"]["05. price"]),2)) + ' ' + str(round(float(spy_data["Global Quote"]["10. change percent"][:-1]),2)) + '%'
   lcd.clear()
   lcd.write_string('-------STOCKS-------')
+  lcd.cursor_pos = (1, 0)
+  lcd.write_string("EOD:".center(20))
+  lcd.cursor_pos = (2, 0)
   lcd.write_string(spy_string.center(20))
   lcd.crlf()
 
@@ -113,5 +116,9 @@ while (True):
   sleep(6)
   displayCryptoData()
   sleep(6)
-  displayStocksData()
-  sleep(6)
+  print(currentTime.weekday())
+  print(currentTime.hour)
+  if (currentTime.hour >= 16 and currentTime.weekday() != 5 and currentTime.weekday() != 6):
+    displayStocksData()
+    sleep(6)
+  
